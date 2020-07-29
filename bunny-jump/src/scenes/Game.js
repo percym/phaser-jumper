@@ -15,6 +15,10 @@ export default class Game extends Phaser.Scene{
     /** @type {Phaser.physics.Arcade.Group} */
     carrots
 
+    carrotsCollected =0 
+
+    /** @type {Phaser.GameObjects.Text} */
+    carrotsCollectedText
     constructor(){
         super('game')
     }
@@ -76,9 +80,24 @@ export default class Game extends Phaser.Scene{
          })
 
          this.carrots.get(240,320,'carrot')
+         
+         this.physics.add.collider(this.platforms, this.carrots)
+
+         this.physics.add.overlap(
+             this.player,
+             this.carrots,
+             this.handleCollectCarrot,
+             undefined,
+             this   
+         )   
+
+         const style ={ colour: '#000',fontSize:24}
+         this.carrotsCollectedText = this.add.text(240, 10 ,'Carrots:0', style)
+         .setScrollFactor(0)
+         .setOrigin(0.5,0)
     }
 
-    update(){
+    update(t , dt){
         this.platforms.children.iterate(
             child => {
                 /** @type {Phaser.physics.Arcade.sprite} */
@@ -88,6 +107,9 @@ export default class Game extends Phaser.Scene{
                 if(platform.y >= scrollY +700 ){
                     platform.y = scrollY - Phaser.Math.Between(50,100)
                     platform.body.updateFromGameObject()
+
+                    // create a carrot above the platform being reused
+                    this.addCarrotAbove(platform)
                 }
             }
         )
@@ -105,11 +127,15 @@ export default class Game extends Phaser.Scene{
             this.player.setVelocityX(200)
         }else{
             this.player.setVelocityX(0)
-        }
+            }
 
         this.horizontalWrap(this.player)
     }
 
+    /**
+     * 
+     * @param {Phaser.GameObjects.Sprite} sprite 
+     */
     horizontalWrap(sprite){
         const halfWidth =sprite.displayWidth * 0.5 
         const gameWidth = this.scale.width
@@ -120,5 +146,40 @@ export default class Game extends Phaser.Scene{
         }else if(sprite.x > gameWidth + halfWidth) {
             sprite.x = -halfWidth;
         }
+    }
+    /**
+     * 
+     * @param {Phaser.GameObjects.Sprite} sprite 
+     */
+    addCarrotAbove(sprite){
+        const y = sprite.y -sprite.displayHeight
+
+        /**@type {Phaser.Physics.Arcade.Sprite} */
+        const carrot = this.carrots.get(sprite.x , y ,'carrot')
+        carrot.setActive(true)
+        carrot.setVisible(true)
+        this.add.existing(carrot)
+
+        carrot.body.setSize(carrot.width, carrot.height)
+
+        return carrot
+    }
+
+    /**
+     * 
+     * @param {Phaser.Physics.Arcade.Sprite} player 
+     * @param {Carrot} carrot 
+     */
+    handleCollectCarrot(player, carrot){
+
+        //hide carrot
+        this.carrots.killAndHide(carrot)
+
+        //disable from physics world
+        this.physics.world.disableBody(carrot.body)
+
+        this.carrotsCollected++
+        const value = `Carrots: ${this.carrotsCollected}`
+        this.carrotsCollectedText.text = value;
     }
 }
