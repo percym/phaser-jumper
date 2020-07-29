@@ -1,4 +1,6 @@
 import Phaser from '../lib/phaser.js'
+import Carrot from '../Carrot.js'
+
 export default class Game extends Phaser.Scene{
 
     /** @type {Phaser.physics.Arcade.sprite} 
@@ -19,6 +21,8 @@ export default class Game extends Phaser.Scene{
         this.load.image('platform','assets/ground_grass.png')
 
         this.load.image('bunny-stand','assets/bunny1_stand.png')
+
+        this.load.image('carrot','assets/carrot.png')
 
         this.cursors= this.input.keyboard.createCursorKeys()
 
@@ -58,6 +62,9 @@ export default class Game extends Phaser.Scene{
          this.cameras.main.startFollow(this.player);
 
          this.cameras.main.setDeadzone(this.scale.width * 1.5)
+
+         const carrot = new Carrot(this, 240, 320, 'carrot')
+         this.add.existing(carrot)
     }
 
     update(){
@@ -99,7 +106,7 @@ export default class Game extends Phaser.Scene{
         if(sprite.x < -halfWidth){
             sprite.x = gameWidth + halfWidth
 
-        }else if(sprite.x > gameWidth+ halfWidth) {
+        }else if(sprite.x > gameWidth + halfWidth) {
             sprite.x = -halfWidth;
         }
     }
