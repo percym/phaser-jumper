@@ -5,11 +5,16 @@ export default class Game extends Phaser.Scene{
 
     /** @type {Phaser.physics.Arcade.sprite} 
     player
+    
     /** @type {Phaser.physics.Arcade.staticGroup}  */
     platforms
 
     /** @type {Phaser.Types.Input.Keyboard.CursorKeys} */
     cursors
+    
+    /** @type {Phaser.physics.Arcade.Group} */
+    carrots
+
     constructor(){
         super('game')
     }
@@ -65,6 +70,12 @@ export default class Game extends Phaser.Scene{
 
          const carrot = new Carrot(this, 240, 320, 'carrot')
          this.add.existing(carrot)
+
+         this.carrots = this.physics.add.group({
+             classType:Carrot
+         })
+
+         this.carrots.get(240,320,'carrot')
     }
 
     update(){
