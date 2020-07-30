@@ -15,12 +15,17 @@ export default class Game extends Phaser.Scene{
     /** @type {Phaser.physics.Arcade.Group} */
     carrots
 
-    carrotsCollected =0 
-
+    carrotsCollected
+   
     /** @type {Phaser.GameObjects.Text} */
     carrotsCollectedText
     constructor(){
         super('game')
+    }
+
+    init(){
+        this.carrotsCollected =0 
+
     }
 
     preload(){
@@ -32,6 +37,8 @@ export default class Game extends Phaser.Scene{
         this.load.image('bunny-stand','assets/bunny1_stand.png')
 
         this.load.image('carrot','assets/carrot.png')
+
+        this.load.image('bunny-jump','assets/bunny1_jump.png')
 
         this.cursors= this.input.keyboard.createCursorKeys()
 
@@ -116,9 +123,11 @@ export default class Game extends Phaser.Scene{
 
         const touchingDown = this.player.body.touching.down
 
-        if(touchingDown)(
+        if(touchingDown){
             this.player.setVelocity(-300)
-        )
+
+            this.player.setTexture('bunny-jump')
+        }
          
         if(this.cursors.left.isDown && !touchingDown){
             this.player.setVelocityX(-200)
