@@ -40,6 +40,7 @@ export default class Game extends Phaser.Scene{
 
         this.load.image('bunny-jump','assets/bunny1_jump.png')
 
+        this.load.audio('jump','assets/sfx/jump.wav')
         this.cursors= this.input.keyboard.createCursorKeys()
 
     }
@@ -127,6 +128,8 @@ export default class Game extends Phaser.Scene{
             this.player.setVelocity(-300)
 
             this.player.setTexture('bunny-jump')
+
+            this.sound.play('jump')
         }
 
         const vy = this.player.body.velocity.y
