@@ -128,6 +128,11 @@ export default class Game extends Phaser.Scene{
 
             this.player.setTexture('bunny-jump')
         }
+
+        const vy = this.player.body.velocity.y
+        if(vy > 0 && this.player.texture.key !== 'bunny-stand'){
+            this.player.setTexture('bunny-stand')
+        }
          
         if(this.cursors.left.isDown && !touchingDown){
             this.player.setVelocityX(-200)
